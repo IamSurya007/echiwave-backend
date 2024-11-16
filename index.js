@@ -9,6 +9,9 @@ import userRoutes from './routes/userRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import http from 'http'
 import { getUrl } from './controllers/getUrl.js';
+import {Server} from 'socket.io'
+import swaggerUi from 'swagger-ui-express'
+import swaggerJsdoc from 'swagger-jsdoc';
 
 dotenv.config()
 
@@ -18,6 +21,33 @@ app.use(cors({
   origin:'*',
   credentials:true,
 }))
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Your API Title',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./routes/*.js'],
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+// const io = new Server(server,
+//   {cors:{
+//     origin: "*"
+//   }}
+// )
+
+// io.on( 'connection',socket=>{
+//     console.log('connected', socket.id)
+// })
+
 
 app.use(
   express.json({
